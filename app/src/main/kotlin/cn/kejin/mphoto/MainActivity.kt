@@ -6,7 +6,7 @@ import android.os.Bundle
 class MainActivity : AppCompatActivity() {
 
     companion object{
-        val url = "https://github.com/liungkejin/MPhoto.git";
+        val TAG = ""
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
