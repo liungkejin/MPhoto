@@ -1,10 +1,8 @@
 package cn.kejin.mphoto.net
 
-import cn.kejin.mphoto.net.entities.Photo
 import cn.kejin.mphoto.net.entities.PhotoDetail
 import cn.kejin.mphoto.net.entities.PhotoPage
 import cn.kejin.net.okhttp.HttpCallback
-import cn.kejin.net.okhttp.Net
 
 /**
  * Author: Kejin ( Liang Ke Jin )
@@ -12,7 +10,7 @@ import cn.kejin.net.okhttp.Net
  */
 interface IWwwApi {
 
-    fun getAbsUrl(uri: String): String = PhotoNet.instance.getWWWAbsUrl(uri)
+    fun getAbsUrl(uri: String): String = PhotoNet.getWWWAbsUrl(uri)
 
     fun getPhotoPage(page: Int, callback: HttpCallback<PhotoPage>)
 

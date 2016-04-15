@@ -15,9 +15,13 @@ class PhotoNet : Net {
         val TAG = "PhotoNet"
 
         val instance by lazy { PhotoNet() }
-    }
 
-    override fun baseWwwUrl(): String {
-        return "https://unsplash.com/"
+        val BASE_WWW_URL = "https://unsplash.com/"
+
+        /**
+         * get absolute URL
+         */
+        fun getWWWAbsUrl(uri: String): String =
+                BASE_WWW_URL.removeSuffix("/") + "/" + uri.removePrefix("/")
     }
 }

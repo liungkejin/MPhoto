@@ -13,10 +13,12 @@ class PhotoPage {
             val page = PhotoPage()
 
             val document = Jsoup.parse(body)
-            val photoElements = document.getElementsByAttribute("data-photo-id")
-
+            val photoElements = document.getElementsByClass("photo-grid")
             photoElements.forEach {
-                page.photos.add(Photo.parse(it))
+                println("Child Size: " + it.children().size)
+                it.children().forEach {
+                    page.photos.add(Photo.parse(it))
+                }
             }
 
             return page
@@ -24,4 +26,13 @@ class PhotoPage {
     }
 
     val photos = mutableListOf<Photo>()
+
+    override fun toString(): String {
+        var string = ""
+        photos.forEach {
+            string += it.toString() + "\n\n"
+        }
+
+        return string
+    }
 }

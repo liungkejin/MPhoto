@@ -14,4 +14,8 @@ class Author {
      * home page url
      */
     var home = ""
+
+    override fun toString(): String {
+        return "Name: $name\nAvatar: $avatar\nHome: $home"
+    }
 }

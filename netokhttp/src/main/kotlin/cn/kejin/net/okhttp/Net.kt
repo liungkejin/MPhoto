@@ -23,17 +23,4 @@ interface Net
         val requester : HttpRequester by lazy { HttpRequester() }
     }
 
-
-    fun baseApiUrl(): String = ""
-
-    fun baseWwwUrl(): String = ""
-
-    /**
-     * get absolute URL
-     */
-    fun getApiAbsUrl(uri: String): String =
-            baseApiUrl().removeSuffix("/") + "/" + uri.removePrefix("/")
-
-    fun getWWWAbsUrl(uri: String): String =
-            baseWwwUrl().removeSuffix("/") + "/" + uri.removePrefix("/")
 }

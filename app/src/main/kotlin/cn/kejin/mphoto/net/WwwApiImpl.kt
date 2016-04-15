@@ -6,10 +6,7 @@ import cn.kejin.net.okhttp.HttpCallback
 import cn.kejin.net.okhttp.HttpException
 import cn.kejin.net.okhttp.Net
 import okhttp3.Call
-import okhttp3.Callback
 import okhttp3.Response
-import org.jetbrains.anko.asyncResult
-import java.io.IOException
 
 /**
  * Author: Kejin ( Liang Ke Jin )
