@@ -16,6 +16,8 @@ class PhotoNet : Net {
 
         val instance by lazy { PhotoNet() }
 
+        val wwwApi : IWwwApi by lazy { WwwApiImpl() }
+
         val BASE_WWW_URL = "https://unsplash.com/"
 
         /**

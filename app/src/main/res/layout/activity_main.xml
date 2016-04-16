@@ -14,10 +14,24 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways"
             app:title="@string/app_name"
             app:titleTextAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large"/>
     </android.support.design.widget.AppBarLayout>
 
 
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <cn.kejin.exrecyclerview.ExRecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -6,4 +6,7 @@
 
     <color name="textColorPrimary">#FFFFFF</color>
     <color name="textColorSecondary">#aaaaaa</color>
+
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
 </resources>

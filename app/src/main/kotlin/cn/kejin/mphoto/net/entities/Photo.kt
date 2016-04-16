@@ -1,6 +1,7 @@
 package cn.kejin.mphoto.net.entities
 
 import android.net.Uri
+import android.util.Log
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.net.URL
@@ -74,15 +75,20 @@ open class Photo {
 
     var image = ""
         set(value) {
-//            val uri = Uri.parse(value)
-//
-//            ixlib = uri.getQueryParameter("ixlib")
-//            fm = uri.getQueryParameter("fm")
-//            s = uri.getQueryParameter("s")
-//
-//            field = uri.host
-            field = value
+            val uri = Uri.parse(value)
+
+            ixlib = uri.getQueryParameter("ixlib")
+            fm = uri.getQueryParameter("fm")
+            s = uri.getQueryParameter("s")
+
+            field = "${uri.scheme}://${uri.host}/${uri.path}"
+//            field = value
         }
+
+    fun getImage(width: Int, q: Int = 100): String {
+//        Log.e("Image: ", "$image?ixlib=$ixlib&q=$q&fm=$fm&s=$s&w=$width")
+        return "$image?ixlib=$ixlib&q=$q&w=$width&crop=entropy&fm=$fm&s=$s"
+    }
 
     var width = "0";
 
