@@ -81,7 +81,7 @@ open class Photo {
             fm = uri.getQueryParameter("fm")
             s = uri.getQueryParameter("s")
 
-            field = "${uri.scheme}://${uri.host}/${uri.path}"
+            field = "${uri.scheme}://${uri.host}${uri.path}"
 //            field = value
         }
 

@@ -21,6 +21,10 @@ class MainApp : Application() {
         // for  dpToPx, pxToDp
         val displayMetrics = DisplayMetrics()
 
+        val screenWidth : Int
+            get() {
+                return pxToDp(instance.resources.displayMetrics.widthPixels.toFloat())
+            }
 
         /**
          * Dp to px
@@ -41,6 +45,5 @@ class MainApp : Application() {
         instance = this
 
         displayMetrics.setTo(resources.displayMetrics)
-
     }
 }

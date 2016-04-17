@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools">
+
+    <group
+        android:id="@+id/group"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/latest"
+            android:icon="@drawable/ic_look_one_48dp"
+            android:title="Latest" />
+
+        <item
+            android:id="@+id/popular"
+            android:icon="@drawable/ic_look_two_48dp"
+            android:title="Popular" />
+
+        <item
+            android:id="@+id/oldest"
+            android:icon="@drawable/ic_look_three_48dp"
+            android:title="Oldest" />
+    </group>
+
+    <item
+        android:id="@+id/about"
+        android:icon="@drawable/ic_info_48dp"
+        android:checkable="false"
+        android:title="About">
+
+    </item>
+</menu>

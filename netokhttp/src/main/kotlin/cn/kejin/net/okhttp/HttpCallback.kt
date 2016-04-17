@@ -40,7 +40,6 @@ abstract class HttpCallback<Model> (val cls : Class<Model>,
         }
         else {
             onSuccess(call, resp)
-
         }
     }
 

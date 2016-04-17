@@ -25,7 +25,8 @@
             android:gravity="center"
             android:text="@string/is_loading"
             android:textColor="@color/black"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <LinearLayout

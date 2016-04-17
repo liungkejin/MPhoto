@@ -13,10 +13,30 @@ import okhttp3.Response
  * Date: 2016/4/15
  */
 class WwwApiImpl : IWwwApi {
-    override fun getPhotoPage(page: Int, callback: HttpCallback<PhotoPage>) {
-        val url = getAbsUrl("?page=$page")
+    override fun getUserPhotoPage(name: String,
+                                  page: Int,
+                                  sort: IWwwApi.SortType,
+                                  callback: HttpCallback<PhotoPage>): Call? {
+        val url = getSortUrl("$name?page=$page", sort)
 
-        Net.requester.get(url, object : HttpCallback<PhotoPage>(PhotoPage::class.java) {
+        return Net.requester.get(url, object : HttpCallback<PhotoPage>(PhotoPage::class.java) {
+            override fun onSuccess(call: Call?, resp: Response) {
+                val photoPage = PhotoPage.parse(resp.body()?.string()?:"")
+                post { onResponse(call, photoPage, null) }
+            }
+
+            override fun onResponse(call: Call?, model: PhotoPage?, exception: HttpException?) {
+                callback.onResponse(call, model, exception)
+            }
+        })
+    }
+
+    override fun getPhotoPage(page: Int,
+                              sort: IWwwApi.SortType,
+                              callback: HttpCallback<PhotoPage>): Call? {
+        var url = getSortUrl("?page=$page", sort)
+
+        return Net.requester.get(url, object : HttpCallback<PhotoPage>(PhotoPage::class.java) {
             override fun onSuccess(call: Call?, resp: Response) {
                 val photoPage = PhotoPage.parse(resp.body()?.string()?:"")
                 post { onResponse(call, photoPage, null) }

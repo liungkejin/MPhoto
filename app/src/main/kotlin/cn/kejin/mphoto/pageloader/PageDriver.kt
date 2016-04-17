@@ -3,6 +3,7 @@ package cn.kejin.mphoto.pageloader
 import android.support.v4.widget.SwipeRefreshLayout
 import android.view.View
 import cn.kejin.exrecyclerview.ExRecyclerView
+import cn.kejin.mphoto.MainApp
 import cn.kejin.mphoto.R
 
 /**
@@ -18,6 +19,7 @@ class PageDriver(val refreshLayout: SwipeRefreshLayout?,
                  val callback: ICallback) : PageController() {
     init {
         refreshLayout?.setOnRefreshListener { refresh() }
+        refreshLayout?.setDistanceToTriggerSync(150)
 
         exListView.setOnLoadMoreListener {
             loadMore()
@@ -83,13 +85,18 @@ class PageDriver(val refreshLayout: SwipeRefreshLayout?,
     private val reload by lazy { footer.findViewById(R.id.reload) }
     private val noMore by lazy { footer.findViewById(R.id.noMore) }
 
+    fun hideFooter() {
+        footer.visibility = View.GONE
+    }
     private fun showLoading() {
+        footer.visibility = View.VISIBLE
         loading.visibility = View.VISIBLE
         reload.visibility = View.GONE
         noMore.visibility = View.GONE
     }
 
     private fun showReload() {
+        footer.visibility = View.VISIBLE
         loading.visibility = View.GONE
         reload.visibility = View.VISIBLE
         noMore.visibility = View.GONE
@@ -98,6 +105,7 @@ class PageDriver(val refreshLayout: SwipeRefreshLayout?,
     }
 
     private fun showNoMore() {
+        footer.visibility = View.VISIBLE
         loading.visibility = View.GONE
         reload.visibility = View.GONE
         noMore.visibility = View.VISIBLE

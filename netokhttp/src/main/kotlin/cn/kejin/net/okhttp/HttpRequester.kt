@@ -1,5 +1,6 @@
 package cn.kejin.net.okhttp
 
+import android.util.Log
 import okhttp3.*
 import java.util.concurrent.TimeUnit
 
@@ -15,7 +16,7 @@ open class HttpRequester
 
         val JSON_TYPE = MediaType.parse("application/json; charset:utf-8")
 
-        val DEF_CONNECT_TIMEOUT_SEC = 10L
+        val DEF_CONNECT_TIMEOUT_SEC = 20L
     }
 
     val httpClient : OkHttpClient;
@@ -47,7 +48,7 @@ open class HttpRequester
      */
     fun get(url: String, callback: Callback): Call? {
 
-//        info(TAG, "Method: GET async, URL: $url")
+        Log.e(TAG, "Method: GET async, URL: $url")
 
         val builder = Request.Builder().url(url).get()
         var call = httpClient.newCall(builder.build());

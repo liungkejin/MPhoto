@@ -21,7 +21,16 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".PhotoDetailActivity"
+        <activity android:name=".PhotoDetailActivity">
+
+        </activity>
+
+        <activity android:name=".AboutActivity"
+                  android:screenOrientation="portrait">
+
+        </activity>
+
+        <activity android:name=".UserPhotosActivity"
                   android:screenOrientation="portrait">
 
         </activity>
