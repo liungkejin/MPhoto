@@ -29,7 +29,7 @@ class MainActivity : CustomStatusBarActivity() {
             KeyEvent.KEYCODE_BACK -> {
                 if (!backFlag && !navMenuCtrl.onBackPressed()) {
                     backFlag = true
-                    Snackbar.make(navMenuCtrl.getDrawer(), R.string.press_again_to_exit, Snackbar.LENGTH_SHORT).show()
+                    snack(navMenuCtrl.getDrawer(), R.string.press_again_to_exit)
                     postDelay({backFlag = false}, 2000)
 
                     return true
@@ -38,5 +38,6 @@ class MainActivity : CustomStatusBarActivity() {
         }
         return super.onKeyDown(keyCode, event)
     }
+
 
 }

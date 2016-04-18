@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.View
 import android.widget.ProgressBar
+import pub.devrel.easypermissions.EasyPermissions
 
 /**
  * Author: Kejin ( Liang Ke Jin )
@@ -21,7 +22,7 @@ import android.widget.ProgressBar
  *  3. progressDialog
  *  4. handler = MainApp.handler
  */
-abstract class BaseActivity: AppCompatActivity(){
+abstract class BaseActivity: AppCompatActivity() {
 
     companion object {
         val clz = 0
@@ -90,7 +91,7 @@ abstract class BaseActivity: AppCompatActivity(){
         }
     }
 
-//    /**
+    //    /**
 //     * show progress dialog
 //     */
 //    fun showProgressDialog(cancelable: Boolean=true, outSideCancel: Boolean=false) {

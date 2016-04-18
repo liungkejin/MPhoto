@@ -1,9 +1,16 @@
 package cn.kejin.mphoto
 
+import android.Manifest
 import android.app.Application
+import android.graphics.Bitmap
 import android.os.Environment
 import android.os.Handler
 import android.util.DisplayMetrics
+import com.squareup.picasso.Cache
+import com.squareup.picasso.LruCache
+import com.squareup.picasso.OkHttpDownloader
+import com.squareup.picasso.Picasso
+import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
 
 /**
@@ -13,10 +20,42 @@ import java.io.File
 class MainApp : Application() {
 
     companion object {
+        /**
+         * TODO
+         */
+        val DEBUG = true
+
+
         // App Directory
         val APP_DIR = "FreePhoto"
-        val appDir = File(Environment.getExternalStorageDirectory(), APP_DIR)
-        val appCacheDir = File(appDir, "caches")
+        val appDir by lazy {
+            if (Environment.getExternalStorageDirectory()?.exists()?:false) {
+                File(Environment.getExternalStorageDirectory(), APP_DIR)
+            }
+            else {
+                instance.filesDir
+            }
+        }
+
+        val appCacheDir : File
+            get() {
+                val file = File(appDir, "caches")
+                if (file.exists()) return file
+                return instance.cacheDir
+            }
+
+        /**
+         * cache file
+         */
+        fun newCacheFile(url: String) : File {
+            if (!appCacheDir.exists()) {
+                appCacheDir.mkdirs()
+            }
+            val file = File(appCacheDir, "temp${url.hashCode()}")
+            file.createNewFile()
+            return file
+        }
+
 
         // global context
         lateinit var instance : MainApp
@@ -52,10 +91,6 @@ class MainApp : Application() {
 
         fun string(id: Int) = instance.resources.getString(id)
 
-        /**
-         * cache file
-         */
-        fun newCacheFile() : File = File.createTempFile("fBzkd", "pcaq", appCacheDir)
     }
 
     override fun onCreate() {
@@ -64,13 +99,6 @@ class MainApp : Application() {
         instance = this
 
         displayMetrics.setTo(resources.displayMetrics)
-
-        if (!appDir.exists()) {
-            appDir.mkdirs()
-        }
-
-        if (!appCacheDir.exists()) {
-            appCacheDir.mkdirs()
-        }
     }
+
 }

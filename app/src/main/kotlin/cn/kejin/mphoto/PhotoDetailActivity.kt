@@ -166,7 +166,7 @@ class PhotoDetailActivity : CustomStatusBarActivity()
                 override fun onResponse(call: Call?, response: Response?) {
                     Log.e(TAG, "Success")
 
-                    val cacheFile = MainApp.newCacheFile()
+                    val cacheFile = MainApp.newCacheFile(imageUrl)
 
                     val fos = FileOutputStream(cacheFile)
 
