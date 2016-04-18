@@ -79,7 +79,7 @@ class PhotoAdapter(activity: Activity) :
             Log.e(MainActivity.TAG, "ImageUrl: $imageUrl")
 
             findView(R.id.photoLayout)?.setOnClickListener {
-                PhotoDetailActivity.start(activity, this@PhotoAdapter)
+                PhotoDetailActivity.start(activity, this@PhotoAdapter, pos)
             }
 
             findView(R.id.userLayout)?.setOnClickListener {

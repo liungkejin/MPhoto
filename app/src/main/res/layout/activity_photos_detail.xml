@@ -3,23 +3,119 @@
              xmlns:app="http://schemas.android.com/apk/res-auto"
              android:orientation="vertical"
              android:layout_width="match_parent"
-             android:layout_height="match_parent">
+             android:layout_height="match_parent" >
 
     <include layout="@layout/layout_custom_status_bar" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <ImageView
-            android:id="@+id/back"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:padding="10dp"
-            android:src="@drawable/ic_back_48dp"
-            android:tint="@color/black"/>
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#33000000">
+
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:padding="15dp"
+                android:src="@drawable/ic_back_48dp"
+                android:tint="@color/white"/>
+
+            <ImageView
+                android:id="@+id/infoBtn"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:src="@drawable/ic_info_48dp"
+                android:padding="15dp"
+                android:layout_gravity="right"
+                android:tint="#fff"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:gravity="center_vertical"
+            android:layout_gravity="bottom|left"
+            android:background="#33000000">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical">
+                <cn.kejin.mphoto.views.CircleImageView
+                    android:id="@+id/avatar"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:visibility="visible"
+                    android:src="@mipmap/ic_default_avatar"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="2"
+                        android:text="Publish by"
+                        android:textSize="12sp"
+                        android:textColor="#ababab"
+                        android:typeface="monospace"
+                        android:gravity="center_vertical"
+                        android:ellipsize="end"/>
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:maxLines="2"
+                        android:text="20"
+                        android:textSize="15sp"
+                        android:textColor="#fff"
+                        android:typeface="monospace"
+                        android:gravity="center_vertical"
+                        android:ellipsize="end"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/download"
+                android:orientation="horizontal"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:padding="5dp"
+                android:background="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:id="@+id/downloadImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_download_48dp"/>
+
+                <ProgressBar
+                    android:id="@+id/downloadProgress"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="invisible"/>
+            </FrameLayout>
+
+        </LinearLayout>
+
     </FrameLayout>
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
 </LinearLayout>

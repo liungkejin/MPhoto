@@ -32,9 +32,11 @@ class PhotoDetailActivity : CustomStatusBarActivity()
         val TAG = "PhotoDetail"
 
         private var photoAdapter : PhotoAdapter? = null
+        private var startPosition : Int = 0
 
-        fun start(activity: Activity, adapter: PhotoAdapter) {
+        fun start(activity: Activity, adapter: PhotoAdapter, pos: Int) {
             photoAdapter = adapter
+            startPosition = pos
 
             val intent = Intent(activity, PhotoDetailActivity::class.java)
             activity.startActivity(intent)
@@ -44,6 +46,12 @@ class PhotoDetailActivity : CustomStatusBarActivity()
     val viewPager : ViewPager by lazy { findViewById(R.id.viewPager) as ViewPager }
     val pageAdapter by lazy { PhotoPageAdapter() }
 
+    lateinit var avatarView : ImageView
+    lateinit var userName : TextView
+    lateinit var infoBtn : ImageView
+    lateinit var downloadBtn: View
+
+
     override fun getLayoutId(): Int = R.layout.activity_photos_detail
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,13 +59,59 @@ class PhotoDetailActivity : CustomStatusBarActivity()
 
         findViewById(R.id.back)?.setOnClickListener { finish() }
         viewPager.adapter = pageAdapter
+
+        viewPager.currentItem = startPosition
+        viewPager.isEnabled = false
+
+        avatarView = findViewById(R.id.avatar) as ImageView
+        userName = findViewById(R.id.name) as TextView
+        infoBtn = findViewById(R.id.infoBtn) as ImageView
+        downloadBtn = findViewById(R.id.download)!!
+    }
+
+    fun setupImageInfoView(photo: Photo) {
+
+        userName.text = photo.author.name
+
+        val avatarUrl = photo.author.avatar
+        if (avatarUrl.isEmpty()) {
+            avatarView.visibility = View.GONE
+        }
+        else {
+            avatarView.visibility = View.VISIBLE
+            Picasso.with(this).load(photo.author.avatar).into(avatarView)
+        }
+
+        infoBtn.setOnClickListener {
+            snack(it, "Info")
+        }
+
+        downloadBtn.setOnClickListener {
+            snack(it, R.string.download_hint, Snackbar.LENGTH_INDEFINITE, R.id.download, View.OnClickListener {
+                //
+            })
+        }
+    }
+
+    class ImageTarget(
+            val progress: ProgressBar, val xImageView: XImageView) : com.squareup.picasso.Target {
+        override fun onPrepareLoad(placeHolderDrawable: Drawable?) { }
+
+        override fun onBitmapFailed(errorDrawable: Drawable?) { }
+
+        override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+            progress.visibility = View.GONE
+            xImageView.setImage(bitmap, false)
+        }
     }
 
     inner class PhotoPageAdapter : PagerAdapter()
     {
+        val mapTarget: MutableMap<Int, ImageTarget> = mutableMapOf()
+
         override fun instantiateItem(container: ViewGroup?, position: Int): Any? {
             val view = layoutInflater.inflate(R.layout.layout_photo_detail, container, false)
-            initializeView(view, photoAdapter?.get(position)?: Photo())
+            initializeView(view, photoAdapter?.get(position)?: Photo(), position)
 
             container?.addView(view)
             return view
@@ -71,53 +125,24 @@ class PhotoDetailActivity : CustomStatusBarActivity()
             if (obj != null) {
                 container?.removeView(obj as View)
             }
+            mapTarget.remove(position)
         }
 
         override fun getCount(): Int = (photoAdapter?.itemCount?:0)
 
 
-        private fun initializeView(view: View, photo: Photo)
+        private fun initializeView(view: View, photo: Photo, position: Int)
         {
             val xImageView = view.findViewById(R.id.xImageView) as XImageView
             val progress = view.findViewById(R.id.progress) as ProgressBar
 
-            val avatarView = view.findViewById(R.id.avatar) as ImageView
-            val userName = view.findViewById(R.id.name) as TextView
-
-            val target = object: com.squareup.picasso.Target {
-                override fun onPrepareLoad(placeHolderDrawable: Drawable?) { }
-
-                override fun onBitmapFailed(errorDrawable: Drawable?) { }
-
-                override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                    progress.visibility = View.GONE
-                    xImageView.setImage(bitmap, false)
-                }
-            }
-
-            val imageUrl = photo.getImage(1080)
+            val imageUrl = photo.getImage(720)
             Log.e(TAG, "Url: $imageUrl")
+            val target = ImageTarget(progress, xImageView)
+            mapTarget.put(position, target)
             Picasso.with(this@PhotoDetailActivity).load(imageUrl).into(target)
 
-            val avatarUrl = photo.author.avatar
-            if (avatarUrl.isEmpty()) {
-                avatarView.visibility = View.GONE
-            }
-            else {
-                avatarView.visibility = View.VISIBLE
-                Picasso.with(this@PhotoDetailActivity).load(photo.author.avatar).into(avatarView)
-            }
-            userName.text = photo.author.name
-
-            view.findViewById(R.id.info)?.setOnClickListener {
-                //
-            }
-
-            view.findViewById(R.id.download)?.setOnClickListener {
-                Snackbar.make(xImageView, R.string.download_hint, Snackbar.LENGTH_INDEFINITE).setAction(R.id.download, {
-                    //
-                })
-            }
+            setupImageInfoView(photo)
         }
     }
 }

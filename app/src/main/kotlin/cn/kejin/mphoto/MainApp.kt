@@ -1,8 +1,10 @@
 package cn.kejin.mphoto
 
 import android.app.Application
+import android.os.Environment
 import android.os.Handler
 import android.util.DisplayMetrics
+import java.io.File
 
 /**
  * Author: Kejin ( Liang Ke Jin )
@@ -11,6 +13,10 @@ import android.util.DisplayMetrics
 class MainApp : Application() {
 
     companion object {
+        // App Directory
+        val APP_DIR = "FreePhoto"
+        val appDir = File(Environment.getExternalStorageDirectory(), APP_DIR)
+
         // global context
         lateinit var instance : MainApp
             private set
@@ -37,6 +43,13 @@ class MainApp : Application() {
          */
         fun pxToDp(px : Float) : Int
                 = (px / displayMetrics.density + 0.5f).toInt();
+
+        /**
+         * resources
+         */
+        fun color(id: Int) = instance.resources.getColor(id)
+
+        fun string(id: Int) = instance.resources.getString(id)
     }
 
     override fun onCreate() {
@@ -45,5 +58,9 @@ class MainApp : Application() {
         instance = this
 
         displayMetrics.setTo(resources.displayMetrics)
+
+        if (!appDir.exists()) {
+            appDir.mkdirs()
+        }
     }
 }

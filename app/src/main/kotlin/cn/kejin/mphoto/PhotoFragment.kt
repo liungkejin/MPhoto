@@ -117,6 +117,6 @@ class PhotoFragment(id: Int, val sortType: IWwwApi.SortType) : BaseFragment(id),
             reloadBtn.setOnClickListener { pageDriver.refresh() }
         }
 
-        Snackbar.make(recyclerView, R.string.refresh_failed, Snackbar.LENGTH_SHORT).show()
+        snack(recyclerView, R.string.refresh_failed)
     }
 }
