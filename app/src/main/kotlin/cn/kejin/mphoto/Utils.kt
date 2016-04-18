@@ -18,7 +18,7 @@ internal fun snack(view: View, id: Int,
 
     barLayout.alpha = 0.8f
     val textView = barLayout.findViewById(R.id.snackbar_text) as TextView
-    textView.setTextColor(MainApp.color(R.color.textColorPrimary))
+    textView.setTextColor(MainApp.color(R.color.white))
 
     if (actionId != 0) {
         snackBar.setAction(actionId, listener)
@@ -35,7 +35,7 @@ internal fun snack(view: View, msg: String,
 
     barLayout.alpha = 0.8f
     val textView = barLayout.findViewById(R.id.snackbar_text) as TextView
-    textView.setTextColor(MainApp.color(R.color.textColorPrimary))
+    textView.setTextColor(MainApp.color(R.color.white))
 
     if (actionMsg != null) {
         snackBar.setAction(actionMsg, listener)

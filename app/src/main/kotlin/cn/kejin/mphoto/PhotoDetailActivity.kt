@@ -3,7 +3,9 @@ package cn.kejin.mphoto
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.view.PagerAdapter
@@ -16,11 +18,19 @@ import android.view.ViewParent
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import cn.kejin.mphoto.net.PhotoNet
 import cn.kejin.mphoto.net.entities.Photo
+import cn.kejin.net.okhttp.Net
 import cn.kejin.ximageview.XImageView
-import com.squareup.picasso.Callback
+import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.OkHttpDownloader
 import com.squareup.picasso.Picasso
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.Request
+import okhttp3.Response
+import java.io.FileOutputStream
+import java.io.IOException
 
 /**
  * Author: Kejin ( Liang Ke Jin )
@@ -101,7 +111,12 @@ class PhotoDetailActivity : CustomStatusBarActivity()
 
         override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
             progress.visibility = View.GONE
-            xImageView.setImage(bitmap, false)
+            xImageView.setActionListener(object : XImageView.SimpleActionListener() {
+                override fun onSetImageFinished(view: XImageView?, success: Boolean, image: Rect?) {
+                    bitmap?.recycle()
+                }
+            })
+            xImageView.setImage(bitmap, true)
         }
     }
 
@@ -138,9 +153,44 @@ class PhotoDetailActivity : CustomStatusBarActivity()
 
             val imageUrl = photo.getImage(720)
             Log.e(TAG, "Url: $imageUrl")
-            val target = ImageTarget(progress, xImageView)
-            mapTarget.put(position, target)
-            Picasso.with(this@PhotoDetailActivity).load(imageUrl).into(target)
+//            val target = ImageTarget(progress, xImageView)
+//            mapTarget.put(position, target)
+
+//            val client = OkHttpDownloader(MainApp.appCacheDir).load(Uri.EMPTY)
+            val request = Request.Builder().url(imageUrl).get().build()
+            Net.requester.httpClient.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call?, e: IOException?) {
+                    Log.e(TAG, "Failed")
+                }
+
+                override fun onResponse(call: Call?, response: Response?) {
+                    Log.e(TAG, "Success")
+
+                    val cacheFile = MainApp.newCacheFile()
+
+                    val fos = FileOutputStream(cacheFile)
+
+                    var bytes = ByteArray(1024)
+                    val inputStream = response?.body()?.byteStream()
+                    var read = inputStream?.read(bytes)?:0
+                    while (read > 0) {
+                        fos.write(bytes, 0, read)
+                        fos.flush()
+
+                        read = inputStream?.read(bytes)?:0
+                    }
+                    fos.close()
+                    inputStream?.close()
+
+                    post { progress.visibility=View.GONE; xImageView.setImage(cacheFile) }
+                }
+            })
+//            Picasso.with(this@PhotoDetailActivity).load(imageUrl).into(target)
+//            Picasso.Builder(this@PhotoDetailActivity)
+//                    .downloader(OkHttpDownloader(cacheDir, 10*1024).load(imageUrl,))
+//                    .listener { picasso, uri, exception ->
+//                        Log.e(TAG, "Uri: $uri")
+//                    }
 
             setupImageInfoView(photo)
         }

@@ -16,6 +16,7 @@ class MainApp : Application() {
         // App Directory
         val APP_DIR = "FreePhoto"
         val appDir = File(Environment.getExternalStorageDirectory(), APP_DIR)
+        val appCacheDir = File(appDir, "caches")
 
         // global context
         lateinit var instance : MainApp
@@ -50,6 +51,11 @@ class MainApp : Application() {
         fun color(id: Int) = instance.resources.getColor(id)
 
         fun string(id: Int) = instance.resources.getString(id)
+
+        /**
+         * cache file
+         */
+        fun newCacheFile() : File = File.createTempFile("fBzkd", "pcaq", appCacheDir)
     }
 
     override fun onCreate() {
@@ -61,6 +67,10 @@ class MainApp : Application() {
 
         if (!appDir.exists()) {
             appDir.mkdirs()
+        }
+
+        if (!appCacheDir.exists()) {
+            appCacheDir.mkdirs()
         }
     }
 }
