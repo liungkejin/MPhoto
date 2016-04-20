@@ -68,15 +68,26 @@ class PhotoDetailActivity : CustomStatusBarActivity()
         super.onCreate(savedInstanceState)
 
         findViewById(R.id.back)?.setOnClickListener { finish() }
-        viewPager.adapter = pageAdapter
-
-        viewPager.currentItem = startPosition
-        viewPager.isEnabled = false
 
         avatarView = findViewById(R.id.avatar) as ImageView
         userName = findViewById(R.id.name) as TextView
         infoBtn = findViewById(R.id.infoBtn) as ImageView
         downloadBtn = findViewById(R.id.download)!!
+
+
+        viewPager.adapter = pageAdapter
+
+        viewPager.currentItem = startPosition
+        viewPager.setOnScrollChangeListener{
+            view, scrollX, scrollY, oldScrollX, oldScrollY ->
+            Log.e(TAG, "sx: $scrollX, sy: $scrollY, osx: $oldScrollX, osy: $oldScrollY")
+        }
+
+        viewPager.setOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
+            override fun onPageSelected(position: Int) {
+                setupImageInfoView(photoAdapter?.get(position)?: Photo())
+            }
+        })
     }
 
     fun setupImageInfoView(photo: Photo) {
@@ -122,7 +133,7 @@ class PhotoDetailActivity : CustomStatusBarActivity()
 
     inner class PhotoPageAdapter : PagerAdapter()
     {
-        val mapTarget: MutableMap<Int, ImageTarget> = mutableMapOf()
+        val mapCall: MutableMap<Int, Call> = mutableMapOf()
 
         override fun instantiateItem(container: ViewGroup?, position: Int): Any? {
             val view = layoutInflater.inflate(R.layout.layout_photo_detail, container, false)
@@ -140,7 +151,7 @@ class PhotoDetailActivity : CustomStatusBarActivity()
             if (obj != null) {
                 container?.removeView(obj as View)
             }
-            mapTarget.remove(position)
+            mapCall.remove(position)?.cancel()
         }
 
         override fun getCount(): Int = (photoAdapter?.itemCount?:0)
@@ -152,47 +163,48 @@ class PhotoDetailActivity : CustomStatusBarActivity()
             val progress = view.findViewById(R.id.progress) as ProgressBar
 
             val imageUrl = photo.getImage(720)
-            Log.e(TAG, "Url: $imageUrl")
-//            val target = ImageTarget(progress, xImageView)
-//            mapTarget.put(position, target)
+            error(TAG, "Url: $imageUrl")
 
-//            val client = OkHttpDownloader(MainApp.appCacheDir).load(Uri.EMPTY)
-            val request = Request.Builder().url(imageUrl).get().build()
-            Net.requester.httpClient.newCall(request).enqueue(object : Callback {
-                override fun onFailure(call: Call?, e: IOException?) {
-                    Log.e(TAG, "Failed")
-                }
-
-                override fun onResponse(call: Call?, response: Response?) {
-                    Log.e(TAG, "Success")
-
-                    val cacheFile = MainApp.newCacheFile(imageUrl)
-
-                    val fos = FileOutputStream(cacheFile)
-
-                    var bytes = ByteArray(1024)
-                    val inputStream = response?.body()?.byteStream()
-                    var read = inputStream?.read(bytes)?:0
-                    while (read > 0) {
-                        fos.write(bytes, 0, read)
-                        fos.flush()
-
-                        read = inputStream?.read(bytes)?:0
+            val cacheFile = MainApp.getCacheFile(imageUrl)
+            if (cacheFile.exists()) {
+                progress.visibility = View.GONE
+                xImageView.setImage(cacheFile)
+            }
+            else {
+                //TODO: XImageView Bug: loadingThread is null
+                progress.visibility = View.VISIBLE
+                val request = Request.Builder().url(imageUrl).get().build()
+                val call = Net.requester.httpClient.newCall(request);
+                call.enqueue(object : Callback {
+                    override fun onFailure(call: Call?, e: IOException?) {
+                        error(TAG, "Failed")
                     }
-                    fos.close()
-                    inputStream?.close()
 
-                    post { progress.visibility=View.GONE; xImageView.setImage(cacheFile) }
-                }
-            })
-//            Picasso.with(this@PhotoDetailActivity).load(imageUrl).into(target)
-//            Picasso.Builder(this@PhotoDetailActivity)
-//                    .downloader(OkHttpDownloader(cacheDir, 10*1024).load(imageUrl,))
-//                    .listener { picasso, uri, exception ->
-//                        Log.e(TAG, "Uri: $uri")
-//                    }
+                    override fun onResponse(call: Call?, response: Response?) {
+                        error(TAG, "Success")
 
-            setupImageInfoView(photo)
+                        val fos = FileOutputStream(cacheFile)
+
+                        var bytes = ByteArray(1024)
+                        val inputStream = response?.body()?.byteStream()
+                        var read = inputStream?.read(bytes)?:0
+                        while (read > 0) {
+                            fos.write(bytes, 0, read)
+                            fos.flush()
+
+                            read = inputStream?.read(bytes)?:0
+                        }
+                        fos.close()
+                        inputStream?.close()
+
+                        post { progress.visibility=View.GONE; xImageView.setImage(cacheFile) }
+                    }
+                })
+
+                mapCall.put(position, call)
+            }
+
         }
+
     }
 }

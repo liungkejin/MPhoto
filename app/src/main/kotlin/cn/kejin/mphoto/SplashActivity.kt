@@ -34,44 +34,55 @@ class SplashActivity : CustomStatusBarActivity(), EasyPermissions.PermissionCall
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initialize()
+        checkPermOrInitialize()
     }
 
-    fun initialize() {
+    fun checkPermOrInitialize() {
+        val writePerm = Manifest.permission.WRITE_EXTERNAL_STORAGE
 
-        val storagePer = Manifest.permission.WRITE_EXTERNAL_STORAGE
-
-        if(EasyPermissions.hasPermissions(this, storagePer)) {
-            createAppDirs()
+        if(EasyPermissions.hasPermissions(this, writePerm)) {
+            initializeAndStartup()
         }
         else {
-            EasyPermissions.requestPermissions(this, "Need write storage permission", RC_STORAGE_PERM, storagePer)
+            EasyPermissions.requestPermissions(this, "Need write storage permission", RC_STORAGE_PERM, writePerm)
         }
     }
 
-    fun createAppDirs() {
-        if (!MainApp.appDir.exists()) {
-            MainApp.appDir.mkdirs()
-        }
+    fun initializeAndStartup() {
+        createAppDirs()
+        setupPicasso()
 
-        if (!MainApp.appCacheDir.exists()) {
-            MainApp.appCacheDir.mkdirs()
-        }
-
-        initializePicasso()
         startMainActivity()
     }
 
-    fun initializePicasso() {
-//        val picasso = Picasso.Builder(this)
-//                .defaultBitmapConfig(Bitmap.Config.RGB_565)
-//                .loggingEnabled(MainApp.DEBUG)
-//                .downloader(OkHttpDownloader(MainApp.appCacheDir))
-//                .indicatorsEnabled(MainApp.DEBUG)
-//                .memoryCache(LruCache(10 * 1024 * 1024))
-//                .build()
-//
-//        Picasso.setSingletonInstance(picasso)
+    fun createAppDirs() {
+        val writePerm = Manifest.permission.WRITE_EXTERNAL_STORAGE
+        if(EasyPermissions.hasPermissions(this, writePerm)) {
+            if (!MainApp.appDir.exists()) {
+                MainApp.appDir.mkdirs()
+            }
+
+            if (!MainApp.appCacheDir.exists()) {
+                MainApp.appCacheDir.mkdirs()
+            }
+        }
+    }
+
+    fun setupPicasso() {
+        val picasso = Picasso.Builder(this)
+                .defaultBitmapConfig(Bitmap.Config.RGB_565)
+                .loggingEnabled(MainApp.DEBUG)
+                .downloader(OkHttpDownloader(MainApp.appCacheDir))
+                .indicatorsEnabled(MainApp.DEBUG)
+                .memoryCache(LruCache(10 * 1024 * 1024))
+                .build()
+
+        try {
+            Picasso.setSingletonInstance(picasso)
+        }
+        catch(e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun startMainActivity() {
@@ -94,8 +105,8 @@ class SplashActivity : CustomStatusBarActivity(), EasyPermissions.PermissionCall
 
         Log.e(TAG, "Denied RC: $requestCode: $ps")
 
-        initializePicasso()
-        startMainActivity()
+        snack(findViewById(android.R.id.content)!!, "you denied!")
+        initializeAndStartup()
     }
 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>?) {
@@ -105,10 +116,6 @@ class SplashActivity : CustomStatusBarActivity(), EasyPermissions.PermissionCall
 
         Log.e(TAG, "Granted RC: $requestCode: $ps")
 
-        when (requestCode) {
-            RC_STORAGE_PERM -> {
-                createAppDirs()
-            }
-        }
+        initializeAndStartup()
     }
 }

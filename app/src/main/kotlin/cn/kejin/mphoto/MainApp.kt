@@ -47,13 +47,8 @@ class MainApp : Application() {
         /**
          * cache file
          */
-        fun newCacheFile(url: String) : File {
-            if (!appCacheDir.exists()) {
-                appCacheDir.mkdirs()
-            }
-            val file = File(appCacheDir, "temp${url.hashCode()}")
-            file.createNewFile()
-            return file
+        fun getCacheFile(url: String) : File {
+            return File(appCacheDir, "temp${url.hashCode()}")
         }
 
 
