@@ -59,7 +59,7 @@ class PhotoAdapter(activity: Activity) :
                         .placeholder(R.mipmap.ic_default_avatar)
                         .into(avatar)
             }
-            Log.e(MainActivity.TAG, "AvatarUrl: $avatarUrl")
+//            Log.e(MainActivity.TAG, "AvatarUrl: $avatarUrl")
 
 
             val width: Int = model.width.toInt()
@@ -76,7 +76,7 @@ class PhotoAdapter(activity: Activity) :
                     .error(R.mipmap.test)
                     .placeholder(R.mipmap.test).into(image)
 
-            Log.e(MainActivity.TAG, "ImageUrl: $imageUrl")
+//            Log.e(MainActivity.TAG, "ImageUrl: $imageUrl")
 
             findView(R.id.photoLayout)?.setOnClickListener {
                 PhotoDetailActivity.start(activity, this@PhotoAdapter, pos)
